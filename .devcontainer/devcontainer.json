@@ -1,0 +1,53 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/debian
+{
+    "name": "Docker outside of Docker",
+    // SELinux fix
+    "workspaceMount": "",
+    "runArgs": ["--volume=${localWorkspaceFolder}:/workspaces/${localWorkspaceFolderBasename}:Z"],
+    // Or use a Dockerfile or Docker Compose file. More info: https://containers.dev/guide/dockerfile
+    "build": {"dockerfile": "Containerfile"},
+    
+    // Features to add to the dev container. More info: https://containers.dev/features.
+    "features": {
+        "ghcr.io/devcontainers/features/docker-outside-of-docker:1": {
+            "version": "latest",
+            "enableNonRootDocker": "true",
+            "moby": "true"
+        }
+    },
+
+    // Configure tool-specific properties.
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "eamodio.gitlens",
+                "ms-kubernetes-tools.vscode-kubernetes-tools",
+                "redhat.ansible",
+                "streetsidesoftware.code-spell-checker"
+            ],
+            "settings": {
+                "cSpell.words": [
+                    "Containerfile",
+                    "datadir",
+                    "devcontainers",
+                    "dockercompose",
+                    "eamodio",
+                    "gradio",
+                    "moby"
+                ],
+                "files.associations": {
+                    "*.j2": "ansible-jinja",
+                    "*.yml": "ansible",
+                    "*.yaml": "ansible"
+                }
+            }
+        }
+    }
+
+    // Use 'forwardPorts' to make a list of ports inside the container available locally.
+    // "forwardPorts": [],
+
+    // Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
+    // "remoteUser": "root"
+}
