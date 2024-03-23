@@ -1,0 +1,20 @@
+- name: Setup Fedora IoT hosts
+  hosts: fedora_iot
+  gather_facts: false
+  tasks:
+
+    - name: Run localhost based tasks # noqa: run-once[task]
+      delegate_to: localhost
+      run_once: true
+      block:
+
+        - name: Run roles/setup-localhost
+          ansible.builtin.include_role:
+            name: setup-localhost
+
+    - name: Run initial-setup role
+      ansible.builtin.include_role:
+        name: initial-setup
+      vars:
+        initial_setup_packages: "{{ packages }}"
+        initial_setup_user: "{{ user }}"

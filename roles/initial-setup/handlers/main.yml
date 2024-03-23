@@ -1,0 +1,4 @@
+---
+# handlers file for roles/initial-setup
+- name: Reboot host
+  ansible.builtin.reboot:

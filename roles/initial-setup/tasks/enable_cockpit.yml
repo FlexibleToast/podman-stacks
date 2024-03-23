@@ -1,0 +1,24 @@
+---
+- name: Install Cockpit
+  community.general.rpm_ostree_pkg:
+    name:
+      - cockpit
+      - cockpit-podman
+    state: present
+  notify: "Reboot host"
+
+- name: Reboot host if needed
+  ansible.builtin.meta: flush_handlers
+
+- name: Ensure Cockpit socket is started and enabled
+  ansible.builtin.service:
+    name: cockpit.socket
+    state: started
+    enabled: true
+
+- name: Allow access to Cockpit
+  ansible.posix.firewalld:
+    service: cockpit
+    permanent: true
+    state: enabled
+    immediate: true

@@ -1,0 +1,26 @@
+---
+# tasks file for roles/setup-localhost
+- name: Create vault.key from template
+  ansible.builtin.template:
+    src: vault.key.j2
+    dest: vault.key
+    mode: '0400'
+  delegate_to: localhost
+  run_once: true
+  when: lookup('env', 'VAULT_KEY') | length > 0
+
+- name: Assert that ssh_private_key is not empty
+  ansible.builtin.assert:
+    that:
+      - ssh_private_key | length > 0
+    quiet: "{{ quiet }}"
+  delegate_to: localhost
+  run_once: true
+
+- name: Copy ssh key to localhost
+  ansible.builtin.template:
+    src: private.key.j2
+    dest: "{{ ssh_key_location }}"
+    mode: '0400'
+  delegate_to: localhost
+  run_once: true

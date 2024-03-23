@@ -1,0 +1,28 @@
+---
+- name: Resize root partition to 100% available space
+  community.general.parted:
+    device: "/dev/{{ initial_setup_root_device.name }}"
+    number: "{{ initial_setup_root_device.number }}"
+    resize: true
+    state: present
+  register: parted_result
+
+- name: Resize root filesystem # noqa: no-handler
+  when: parted_result.changed
+  block:
+    - name: Remount filesystem as rw
+      ansible.posix.mount:
+        path: /sysroot
+        src: "/dev/{{ initial_setup_root_device.partition }}"
+        opts: rw
+        state: remounted
+      notify: "Reboot host"
+
+    - name: Resize root filesystem
+      community.general.filesystem:
+        device: "/dev/{{ initial_setup_root_device.partition }}"
+        fstype: "{{ initial_setup_root_device.fstype }}"
+        resizefs: true
+
+    - name: Reboot host
+      ansible.builtin.meta: flush_handlers
