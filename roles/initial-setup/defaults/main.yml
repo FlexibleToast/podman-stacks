@@ -9,3 +9,7 @@ initial_setup_root_device:
   number: 3
   partition: "mmcblk0p3"
   fstype: ext4
+initial_setup_cockpit_packages:
+  - cockpit
+  - cockpit-podman
+  - cockpit-storaged

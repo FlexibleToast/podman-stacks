@@ -1,9 +1,7 @@
 ---
 - name: Install Cockpit
   community.general.rpm_ostree_pkg:
-    name:
-      - cockpit
-      - cockpit-podman
+    name: "{{ initial_setup_cockpit_packages }}"
     state: present
   notify: "Reboot host"
 

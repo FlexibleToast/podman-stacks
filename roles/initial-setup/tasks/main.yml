@@ -8,6 +8,10 @@
   ansible.builtin.include_tasks: create_user.yml
   when: initial_setup_create_user
 
+- name: Update packages
+  ansible.posix.rpm_ostree_upgrade:
+  notify: "Reboot host"
+
 - name: Install packages
   community.general.rpm_ostree_pkg:
     name: "{{ initial_setup_packages }}"
