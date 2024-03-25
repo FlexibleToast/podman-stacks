@@ -1,22 +1,43 @@
 ---
-- name: Resize root partition to 100% available space
-  community.general.parted:
-    device: "/dev/{{ initial_setup_root_device.name }}"
-    number: "{{ initial_setup_root_device.number }}"
-    resize: true
-    state: present
-  register: parted_result
+- name: Get host info
+  ansible.builtin.setup:
+  register: setup_result
+
+- name: Get used space for disk
+  ansible.builtin.set_fact:
+    used_size: "{{ (used_size | int) + (item.value.size | human_to_bytes | int) }}"
+  loop: "{{ setup_result.ansible_facts.ansible_devices[initial_setup_root_device.name].partitions | dict2items }}"
 
 - name: Resize root filesystem # noqa: no-handler
-  when: parted_result.changed
+  when: ((used_size | int) + ('1 GB' | human_to_bytes)) < (setup_result.ansible_facts.ansible_devices[initial_setup_root_device.name].size | human_to_bytes)
   block:
+
+    - name: Ensure pip is installed on {{ inventory_hostname }}
+      community.general.rpm_ostree_pkg:
+        name: python3-pip
+        state: present
+      notify: "Reboot host"
+
+    - name: Reboot if needed
+      ansible.builtin.meta: flush_handlers
+
+    - name: Ensure pexpect is on {{ inventory_hostname }}
+      ansible.builtin.pip:
+        name: "pexpect"
+        state: present
+
+    - name: Resize root partition to 100% available space
+      ansible.builtin.expect:
+        command: "parted /dev/{{ initial_setup_root_device.name }} resizepart {{ initial_setup_root_device.number }} 100%"
+        responses:
+          "Yes/No?": "Yes"
+
     - name: Remount filesystem as rw
       ansible.posix.mount:
         path: /sysroot
         src: "/dev/{{ initial_setup_root_device.partition }}"
         opts: rw
         state: remounted
-      notify: "Reboot host"
 
     - name: Resize root filesystem
       community.general.filesystem:
@@ -25,4 +46,13 @@
         resizefs: true
 
     - name: Reboot host
-      ansible.builtin.meta: flush_handlers
+      ansible.builtin.reboot:
+
+    - name: Remove pip if not requested for {{ inventory_hostname }}
+      community.general.rpm_ostree_pkg:
+        name: python3-pip
+        state: absent
+      notify: "Reboot host"
+      when:
+        - initial_setup_packages is defined
+        - "'python3-pip' not in initial_setup_packages"

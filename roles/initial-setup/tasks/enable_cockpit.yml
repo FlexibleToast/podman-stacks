@@ -9,10 +9,13 @@
   ansible.builtin.meta: flush_handlers
 
 - name: Ensure Cockpit socket is started and enabled
-  ansible.builtin.systemd:
-    name: cockpit.socket
+  ansible.builtin.systemd_service:
+    name: "{{ item }}"
     state: started
     enabled: true
+    daemon_reload: true
+  loop:
+    - cockpit.socket
 
 - name: Allow access to Cockpit
   ansible.posix.firewalld:

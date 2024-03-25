@@ -24,7 +24,8 @@
                 "eamodio.gitlens",
                 "ms-kubernetes-tools.vscode-kubernetes-tools",
                 "redhat.ansible",
-                "streetsidesoftware.code-spell-checker"
+                "streetsidesoftware.code-spell-checker",
+                "tuxtina.json2yaml"
             ],
             "settings": {
                 "ansible.python.interpreterPath": "/usr/bin/python3",
@@ -35,7 +36,9 @@
                     "dockercompose",
                     "eamodio",
                     "gradio",
-                    "moby"
+                    "moby",
+                    "oneshot",
+                    "tuxtina"
                 ],
                 "files.associations": {
                     "*.j2": "ansible-jinja",

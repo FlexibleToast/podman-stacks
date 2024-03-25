@@ -13,3 +13,4 @@ initial_setup_cockpit_packages:
   - cockpit
   - cockpit-podman
   - cockpit-storaged
+used_size: 0
