@@ -8,6 +8,39 @@
 - name: Reboot host if needed
   ansible.builtin.meta: flush_handlers
 
+- name: Change Cockpit port
+  when: initial_setup_cockpit_port != 9090
+  block:
+    - name: Create cockpit.socket.d directory
+      ansible.builtin.file:
+        path: /etc/systemd/system/cockpit.socket.d
+        state: directory
+        owner: root
+        group: root
+        mode: '0755'
+
+    - name: Create Cockpit listen.conf
+      ansible.builtin.template:
+        src: listen.conf.j2
+        dest: /etc/systemd/system/cockpit.socket.d/listen.conf
+        owner: root
+        group: root
+        mode: '0644'
+
+    - name: Change SELinux context for port {{ initial_setup_cockpit_port }}
+      community.general.seport:
+        ports: "{{ initial_setup_cockpit_port }}"
+        proto: tcp
+        setype: websm_port_t
+        state: present
+
+    - name: Allow access to Cockpiton port {{ initial_setup_cockpit_port }}
+      ansible.posix.firewalld:
+        port: "{{ initial_setup_cockpit_port }}/tcp"
+        permanent: true
+        state: enabled
+        immediate: true
+
 - name: Ensure Cockpit socket is started and enabled
   ansible.builtin.systemd_service:
     name: "{{ item }}"
@@ -17,9 +50,10 @@
   loop:
     - cockpit.socket
 
-- name: Allow access to Cockpit
+- name: Allow access to Cockpit on default port
   ansible.posix.firewalld:
     service: cockpit
     permanent: true
     state: enabled
     immediate: true
+  when: initial_setup_cockpit_port == 9090

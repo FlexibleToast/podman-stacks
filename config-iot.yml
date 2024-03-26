@@ -18,3 +18,4 @@
       vars:
         initial_setup_packages: "{{ packages }}"
         initial_setup_user: "{{ user }}"
+        initial_setup_cockpit_port: "{{ cockpit_port }}"

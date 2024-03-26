@@ -13,4 +13,5 @@ initial_setup_cockpit_packages:
   - cockpit
   - cockpit-podman
   - cockpit-storaged
+initial_setup_cockpit_port: 9090
 used_size: 0
