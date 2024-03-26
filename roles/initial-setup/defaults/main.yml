@@ -1,0 +1,17 @@
+---
+# defaults file for roles/initial-setup
+initial_setup_expand_root: true
+initial_setup_create_user: true
+initial_setup_configure_btop: true
+initial_setup_enable_cockpit: true
+initial_setup_root_device:
+  name: "mmcblk0"
+  number: 3
+  partition: "mmcblk0p3"
+  fstype: ext4
+initial_setup_cockpit_packages:
+  - cockpit
+  - cockpit-podman
+  - cockpit-storaged
+initial_setup_cockpit_port: 9090
+used_size: 0

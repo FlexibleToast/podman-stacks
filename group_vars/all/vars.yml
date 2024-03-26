@@ -1,0 +1,5 @@
+domain: "{{ vault_domain }}"
+user: "{{ vault_user }}"
+ssh_private_key: "{{ vault_ssh_private_key }}"
+ssh_key_location: "{{ vault_ssh_key_location }}"
+ansible_ssh_private_key_file: "{{ vault_ansible_ssh_private_key_file }}"

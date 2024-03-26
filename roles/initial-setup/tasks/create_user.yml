@@ -1,0 +1,30 @@
+---
+- name: Hash password
+  ansible.builtin.set_fact:
+    hashed_password: "{{ initial_setup_user.password | password_hash }}"
+  no_log: true
+  when: initial_setup_user.password is defined
+
+- name: Add user {{ initial_setup_user.name }}
+  ansible.builtin.user:
+    name: "{{ initial_setup_user.name }}"
+    comment: "{{ initial_setup_user.full_name }}"
+    password: "{{ hashed_password | default(omit) }}"
+    update_password: "{{ initial_setup_update_password | default('on_create') }}"
+    uid: "{{ initial_setup_user.uid | default(1000) }}"
+    groups: "{{ initial_setup_user.groups | default(omit) }}"
+    append: "{{ initial_setup_user.append | default(omit) }}"
+    state: present
+
+- name: Set authorized key for new user
+  ansible.posix.authorized_key:
+    user: "{{ initial_setup_user.name }}"
+    state: present
+    key: "{{ lookup('file', 'id_rsa.pub') }}"
+
+- name: Allow group wheel sudo access no password
+  community.general.sudoers:
+    name: wheel-all
+    group: wheel
+    commands: ALL
+    nopassword: true

@@ -1,0 +1,5 @@
+---
+# defaults file for roles/setup-localhost
+ssh_private_key:
+ssh_key_location: "~/.ssh/ansible"
+quiet: true

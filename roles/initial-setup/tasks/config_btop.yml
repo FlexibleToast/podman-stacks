@@ -1,0 +1,37 @@
+---
+- name: Ensure config exists for users
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    state: directory
+    owner: "{{ item.user }}"
+    group: "{{ item.user }}"
+    mode: "{{ item.mode }}"
+  loop:
+    - path: "/root/.config"
+      mode: "0700"
+      user: root
+    - path: "/root/.config/btop"
+      mode: "0755"
+      user: root
+    - path: "/var/home/{{ initial_setup_user.name }}/.config"
+      mode: "0700"
+      user: "{{ initial_setup_user.name }}"
+    - path: "/var/home/{{ initial_setup_user.name }}/.config/btop"
+      mode: "0755"
+      user: "{{ initial_setup_user.name }}"
+
+- name: Copy config to root user
+  ansible.builtin.copy:
+    dest: "/root/.config/btop/btop.conf"
+    src: btop.conf
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Copy config to user {{ initial_setup_user.name }}
+  ansible.builtin.copy:
+    dest: "/var/home/{{ initial_setup_user.name }}/.config/btop/btop.conf"
+    src: btop.conf
+    owner: "{{ initial_setup_user.name }}"
+    group: "{{ initial_setup_user.name }}"
+    mode: '0644'
