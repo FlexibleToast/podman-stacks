@@ -1,4 +1,10 @@
 ---
+- name: Create user groups
+  ansible.builtin.group:
+    name: "{{ item.name }}"
+    gid: "{{ item.gid }}"
+  loop: "{{ user_groups }}"
+
 - name: Hash password
   ansible.builtin.set_fact:
     hashed_password: "{{ initial_setup_user.password | password_hash }}"

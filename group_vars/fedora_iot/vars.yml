@@ -1,6 +1,19 @@
 ansible_user: root
 ansible_ssh_private_key_file: ~/.ssh/ansible
+user_groups:
+  - name: container-data
+    gid: 1001
+  - name: downloads
+    gid: 1002
+  - name: media
+    gid: 1003
 packages:
   - tmux
   - btop
 cockpit_port: 443
+usb_devices:
+  - /dev/sda
+  - /dev/sdb
+container_data_mountpoint: "/srv/container-data"
+container_data_owner: jmcdade
+container_data_group: container-data

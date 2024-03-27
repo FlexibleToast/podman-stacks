@@ -1,0 +1,23 @@
+---
+- name: Wipe drives
+  community.general.filesystem:
+    dev: "{{ item }}"
+    state: absent
+  loop: "{{ mount_usbs_devices }}"
+  when: mount_usbs_wipefs
+
+- name: Update partitions
+  ansible.builtin.command:
+    cmd: partprobe
+  changed_when: false
+  when: mount_usbs_wipefs
+
+- name: Create btrfs filesystem
+  ansible.builtin.command:
+    cmd: >
+      mkfs.btrfs
+      -L {{ mount_usbs_label }}
+      -m {{ mount_usbs_metadata_raid }}
+      -d {{ mount_usbs_data_raid }}
+      {{ mount_usbs_devices | join(' ') }}
+    creates: /dev/disk/by-label/{{ mount_usbs_label }}

@@ -1,0 +1,12 @@
+---
+# tasks file for roles/mount-usbs
+- name: Create btrfs filesystem
+  ansible.builtin.include_tasks: create-btrfs.yml
+
+- name: Mount filesystem
+  ansible.posix.mount:
+    path: "{{ mount_usbs_mountpoint }}"
+    src: LABEL={{ mount_usbs_label }}
+    fstype: btrfs
+    opts: compress=zstd:3,nofail
+    state: mounted
