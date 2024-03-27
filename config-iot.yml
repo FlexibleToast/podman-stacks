@@ -30,3 +30,4 @@
         mount_usbs_mountpoint: "{{ container_data_mountpoint }}"
         mount_usbs_owner: "{{ container_data_owner }}"
         mount_usbs_group: "{{ container_data_group }}"
+        mount_usbs_mode: "{{ container_data_mode }}"

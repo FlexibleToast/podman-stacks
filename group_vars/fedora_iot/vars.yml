@@ -14,6 +14,7 @@ cockpit_port: 443
 usb_devices:
   - /dev/sda
   - /dev/sdb
-container_data_mountpoint: "/srv/container-data"
+container_data_mountpoint: "/var/srv/container-data"
 container_data_owner: jmcdade
 container_data_group: container-data
+container_data_mode: '6770'
