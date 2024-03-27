@@ -12,4 +12,3 @@ config_autofs_servers:
     mountpoint:
     username:
     password:
-    mount_opts:

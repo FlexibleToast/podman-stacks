@@ -29,4 +29,3 @@ autofs_servers:
     name: kerbol.lan
     username: "{{ vault_kerbol_username }}"
     password: "{{ vault_kerbol_password }}"
-    mount_opts:
