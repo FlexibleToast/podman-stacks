@@ -18,3 +18,15 @@ container_data_mountpoint: "/var/srv/container-data"
 container_data_owner: jmcdade
 container_data_group: container-data
 container_data_mode: '6770'
+autofs_servers:
+  - shares:
+      - name: downloads
+        uid: 1000
+        gid: 1002
+      - name: media
+        uid: 1000
+        gid: 1003
+    name: kerbol.lan
+    username: "{{ vault_kerbol_username }}"
+    password: "{{ vault_kerbol_password }}"
+    mount_opts:

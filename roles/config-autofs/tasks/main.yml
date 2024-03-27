@@ -1,0 +1,54 @@
+---
+# tasks file for roles/config-autofs
+- name: Install autofs packages
+  community.general.rpm_ostree_pkg:
+    name: "{{ config_autofs_packages }}"
+    state: present
+  notify: "Reboot host"
+
+- name: Reboot with new packages if required
+  ansible.builtin.meta: flush_handlers
+
+- name: Ensure config directory exists
+  ansible.builtin.file:
+    path: "/etc/auto.master.d"
+    owner: root
+    group: root
+    mode: '0755'
+    state: directory
+
+- name: Create credentials file
+  ansible.builtin.template:
+    dest: "/etc/{{ item.name }}-smb-credentials"
+    src: smb-credentials.j2
+    owner: root
+    group: root
+    mode: '0600'
+  loop: "{{ config_autofs_servers }}"
+  no_log: true
+
+- name: Create master files
+  ansible.builtin.template:
+    dest: "/etc/auto.master.d/{{ item.name }}.autofs"
+    src: master.autofs.j2
+    owner: root
+    group: root
+    mode: '0644'
+  loop: "{{ config_autofs_servers }}"
+  no_log: true
+
+- name: Create share configs
+  ansible.builtin.template:
+    dest: "/etc/auto.{{ item.name }}"
+    src: auto.server.j2
+    owner: root
+    group: root
+    mode: '0644'
+  loop: "{{ config_autofs_servers }}"
+  no_log: true
+
+- name: Start and enable autofs service
+  ansible.builtin.systemd:
+    name: autofs
+    state: started
+    enabled: true

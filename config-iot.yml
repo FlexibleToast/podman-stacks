@@ -31,3 +31,9 @@
         mount_usbs_owner: "{{ container_data_owner }}"
         mount_usbs_group: "{{ container_data_group }}"
         mount_usbs_mode: "{{ container_data_mode }}"
+
+    - name: Configure SMB with autofs
+      ansible.builtin.include_role:
+        name: config-autofs
+      vars:
+        config_autofs_servers: "{{ autofs_servers }}"

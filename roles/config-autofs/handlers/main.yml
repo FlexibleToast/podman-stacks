@@ -1,0 +1,4 @@
+---
+# handlers file for roles/config-autofs
+- name: Reboot host
+  ansible.builtin.reboot:

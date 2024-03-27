@@ -1,0 +1,15 @@
+---
+# defaults file for roles/config-autofs
+config_autofs_packages:
+  - autofs
+  - cifs-utils
+config_autofs_servers:
+  - shares:
+      - name:
+        uid:
+        gid:
+    name:
+    mountpoint:
+    username:
+    password:
+    mount_opts:
