@@ -35,6 +35,7 @@
     group: root
     mode: '0644'
   loop: "{{ config_autofs_servers }}"
+  notify: "Restart autofs service"
   no_log: true
 
 - name: Create share configs
@@ -45,6 +46,7 @@
     group: root
     mode: '0644'
   loop: "{{ config_autofs_servers }}"
+  notify: "Restart autofs service"
   no_log: true
 
 - name: Start and enable autofs service

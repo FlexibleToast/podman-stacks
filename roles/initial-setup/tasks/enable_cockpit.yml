@@ -34,7 +34,7 @@
         setype: websm_port_t
         state: present
 
-    - name: Allow access to Cockpiton port {{ initial_setup_cockpit_port }}
+    - name: Allow access to Cockpit on port {{ initial_setup_cockpit_port }}
       ansible.posix.firewalld:
         port: "{{ initial_setup_cockpit_port }}/tcp"
         permanent: true

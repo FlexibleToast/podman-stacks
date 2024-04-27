@@ -26,6 +26,6 @@ autofs_servers:
       - name: media
         uid: 1000
         gid: 1003
-    name: kerbol.lan
+    name: homelab.kerbol.lan
     username: "{{ vault_kerbol_username }}"
     password: "{{ vault_kerbol_password }}"
