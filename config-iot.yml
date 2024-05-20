@@ -19,3 +19,21 @@
         initial_setup_packages: "{{ packages }}"
         initial_setup_user: "{{ user }}"
         initial_setup_cockpit_port: "{{ cockpit_port }}"
+
+    - name: Mount USB drives as btrfs raid1
+      ansible.builtin.include_role:
+        name: mount-usbs
+      vars:
+        mount_usbs_wipefs: "{{ wipefs | default(false) }}"
+        mount_usbs_label: "{{ (container_data_mountpoint | split('/'))[-1] }}"
+        mount_usbs_devices: "{{ usb_devices }}"
+        mount_usbs_mountpoint: "{{ container_data_mountpoint }}"
+        mount_usbs_owner: "{{ container_data_owner }}"
+        mount_usbs_group: "{{ container_data_group }}"
+        mount_usbs_mode: "{{ container_data_mode }}"
+
+    - name: Configure SMB with autofs
+      ansible.builtin.include_role:
+        name: config-autofs
+      vars:
+        config_autofs_servers: "{{ autofs_servers }}"

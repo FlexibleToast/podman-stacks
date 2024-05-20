@@ -1,0 +1,9 @@
+---
+# handlers file for roles/config-autofs
+- name: Restart autofs service
+  ansible.builtin.service:
+    name: autofs.service
+    state: restarted
+
+- name: Reboot host
+  ansible.builtin.reboot:
