@@ -1,0 +1,18 @@
+{
+    "ansible.python.interpreterPath": "/usr/bin/python3",
+    "cSpell.words": [
+        "Containerfile",
+        "datadir",
+        "devcontainers",
+        "dockercompose",
+        "eamodio",
+        "gradio",
+        "moby",
+        "oneshot",
+        "tuxtina"
+    ],
+    "files.associations": {
+        "*.j2": "ansible-jinja",
+        "*.yml": "ansible",
+        "*.yaml": "ansible"
+}}
