@@ -15,4 +15,5 @@
         "*.j2": "ansible-jinja",
         "*.yml": "ansible",
         "*.yaml": "ansible"
-}}
+    }
+}

@@ -2,12 +2,12 @@
 # tasks file for roles/initial-setup
 - name: Remove kargs $ignition_firstboot from {{ inventory_hostname }}
   ansible.builtin.command:
-    cmd: rpm-ostree kargs --delete='$ignition_firstboot'
+    cmd: rpm-ostree kargs --delete-if-present='$ignition_firstboot' --unchanged-exit-77
   changed_when:
-    - '"Changes queued for next boot" in kargs_result.stdout'
+    - kargs_result.rc != 77
   failed_when:
-    - "'error: No key \\'$ignition_firstboot\\' found' not in kargs_result.stderr"
     - kargs_result.rc != 0
+    - kargs_result.rc != 77
   register: kargs_result
   notify: "Reboot host"
 
