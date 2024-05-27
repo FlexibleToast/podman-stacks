@@ -1,16 +1,31 @@
 ---
 - name: Mount filesystem
   ansible.posix.mount:
-    path: "{{ mount_usbs_mountpoint }}"
+    path: "{{ item.mount }}"
     src: LABEL={{ mount_usbs_label }}
     fstype: btrfs
-    opts: compress=zstd:3,nofail
+    opts: subvol={{ item.name }},compress=zstd:3,nofail
     state: mounted
+  loop: "{{ mount_usbs_subvolumes }}"
 
 - name: Change permissions
   ansible.builtin.file:
-    path: "{{ mount_usbs_mountpoint }}"
+    path: "{{ item.mount }}"
     owner: "{{ mount_usbs_owner }}"
     group: "{{ mount_usbs_group }}"
     mode: "{{ mount_usbs_mode }}"
     state: directory
+  loop: "{{ mount_usbs_subvolumes }}"
+
+- name: Set SELinux file context
+  community.general.sefcontext:
+    target: "{{ item.mount }}(/.*)?"
+    setype: "{{ mount_usbs_setype }}"
+  loop: "{{ mount_usbs_subvolumes }}"
+
+- name: Apply SELinux file context
+  ansible.builtin.command:
+    cmd: restorecon -irv {{ item.mount }}
+  register: restorecon_result
+  changed_when: "'Relabeled' in restorecon_result.stdout"
+  loop: "{{ mount_usbs_subvolumes }}"
