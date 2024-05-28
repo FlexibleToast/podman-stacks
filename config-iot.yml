@@ -24,9 +24,11 @@
         mount_usbs_group: "{{ container_data_group }}"
         mount_usbs_mode: "{{ container_data_mode }}"
 
-    # - name: Enable snapper on btrfs drives
-    #   ansible.builtin.include_role:
-    #     name: enable-snapper
+    - name: Enable snapper on btrfs drives
+      ansible.builtin.include_role:
+        name: enable-snapper
+      vars:
+        enable_snapper_subvolumes: "{{ snapper_subvolumes }}"
 
     - name: Configure SMB with autofs
       ansible.builtin.include_role:

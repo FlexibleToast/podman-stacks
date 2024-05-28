@@ -1,0 +1,9 @@
+---
+# handlers file for roles/enable-snapper
+- name: Reboot host
+  ansible.builtin.reboot:
+
+- name: Restart snapperd
+  ansible.builtin.service:
+    name: snapperd.service
+    state: restarted

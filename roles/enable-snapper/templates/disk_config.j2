@@ -1,0 +1,66 @@
+# subvolume to snapshot
+SUBVOLUME="{{ item.path }}"
+
+# filesystem type
+FSTYPE="btrfs"
+
+# btrfs qgroup for space aware cleanup algorithms
+QGROUP=""
+
+# fraction of the filesystems space the snapshots may use
+SPACE_LIMIT="0.5"
+
+# fraction of the filesystems space that should be free
+FREE_LIMIT="0.2"
+
+# users and groups allowed to work with config
+ALLOW_USERS="{{ item.users | default('')}}"
+ALLOW_GROUPS="{{ item.groups | default('') }}"
+
+# sync users and groups from ALLOW_USERS and ALLOW_GROUPS to .snapshots
+# directory
+SYNC_ACL="yes"
+
+# start comparing pre- and post-snapshot in background after creating
+# post-snapshot
+BACKGROUND_COMPARISON="yes"
+
+# run daily number cleanup
+{% if item.number is defined %}
+NUMBER_CLEANUP="{{ item.number.enabled | default('yes') }}"
+NUMBER_MIN_AGE="{{ item.number.min_age | default('1800') }}"
+NUMBER_LIMIT="{{ item.number.limit | default('50') }}"
+NUMBER_LIMIT_IMPORTANT="{{ item.number.limit_importatant | default('10') }}"
+{% else %}
+NUMBER_CLEANUP="yes"
+NUMBER_MIN_AGE="1800"
+NUMBER_LIMIT="50"
+NUMBER_LIMIT_IMPORTANT="10"
+{% endif %}
+
+# create hourly snapshots
+{% if item.timeline is defined %}
+TIMELINE_CREATE="{{ item.timeline.create | default('yes') }}"
+TIMELINE_CLEANUP="{{ item.timeline.cleanup | default('yes') }}"
+TIMELINE_MIN_AGE="{{ item.timeline.min_age | default('1800') }}"
+TIMELINE_LIMIT_HOURLY="{{ item.timeline.limit_hourly | default('10') }}"
+TIMELINE_LIMIT_DAILY="{{ item.timeline.limit_daily | default('10') }}"
+TIMELINE_LIMIT_WEEKLY="{{ item.timeline.limit_weekly | default('0') }}"
+TIMELINE_LIMIT_MONTHLY="{{ item.timeline.limit_monthly | default('10') }}"
+TIMELINE_LIMIT_YEARLY="{{ item.timeline.limit_yearly | default('10') }}"
+{% else %}
+TIMELINE_CREATE="yes"
+TIMELINE_CLEANUP="yes"
+TIMELINE_MIN_AGE="1800"
+TIMELINE_LIMIT_HOURLY="10"
+TIMELINE_LIMIT_DAILY="10"
+TIMELINE_LIMIT_WEEKLY="0"
+TIMELINE_LIMIT_MONTHLY="10"
+TIMELINE_LIMIT_YEARLY="10"
+{% endif %}
+
+# cleanup empty pre-post-pairs
+EMPTY_PRE_POST_CLEANUP="yes"
+
+# limits for empty pre-post-pair cleanup
+EMPTY_PRE_POST_MIN_AGE="1800"

@@ -1,0 +1,42 @@
+---
+# tasks file for roles/enable-snapper
+- name: Install required packages
+  community.general.rpm_ostree_pkg:
+    name: "{{ enable_snapper_packages }}"
+    state: present
+  notify: "Reboot host"
+
+- name: Reboot host if needed
+  ansible.builtin.meta: flush_handlers
+
+- name: Create snapper config
+  ansible.builtin.shell:
+    cmd: >
+      umount "{{ item.path }}/.snapshots" &&
+      rmdir "{{ item.path }}/.snapshots" &&
+      snapper -c {{ item.name }} create-config {{ item.path }} &&
+      btrfs subvolume delete "{{ item.path }}/.snapshots" &&
+      mkdir "{{ item.path }}/.snapshots" &&
+      mount "{{ item.path }}/.snapshots"
+    creates: /etc/snapper/configs/{{ item.name }}
+  loop: "{{ enable_snapper_subvolumes }}"
+
+- name: Modify snapper config
+  ansible.builtin.template:
+    src: disk_config.j2
+    dest: /etc/snapper/configs/{{ item.name }}
+    owner: root
+    group: root
+    mode: '0640'
+  loop: "{{ enable_snapper_subvolumes }}"
+  notify: "Restart snapperd"
+
+- name: Enable snapper timers
+  ansible.builtin.systemd_service:
+    name: "{{ item }}"
+    state: started
+    enabled: true
+  loop:
+    - snapper-boot.timer
+    - snapper-cleanup.timer
+    - snapper-timeline.timer

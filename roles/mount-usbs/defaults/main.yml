@@ -8,6 +8,10 @@ mount_usbs_data_raid: raid1
 mount_usbs_subvolumes:
   - name:
     mount:
+    owner:
+    group:
+    mode:
+    setype:
 mount_usbs_setype: var_t
 mount_usbs_owner: root
 mount_usbs_group: root
