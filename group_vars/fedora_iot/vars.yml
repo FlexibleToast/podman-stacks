@@ -1,5 +1,4 @@
 ansible_user: root
-ansible_ssh_private_key_file: ~/.ssh/ansible
 user_groups:
   - name: container-data
     gid: 1001
@@ -14,9 +13,20 @@ cockpit_port: 443
 usb_devices:
   - /dev/sda
   - /dev/sdb
-container_data_mountpoint: "/var/srv/container-data"
-container_data_owner: jmcdade
-container_data_group: container-data
+container_data_label: container-data
+container_data_subvolumes:
+  - name: "@container-data"
+    mount: "/var/srv/container-data"
+    owner: jmcdade
+    group: container-data
+    mode: '6770'
+    setype: var_t
+  - name: "@container-data_snapshots"
+    mount: "/var/srv/container-data/.snapshots"
+    owner: root
+    group: root
+    mode: '0770'
+    setype: snapperd_data_t
 container_data_mode: '6770'
 autofs_servers:
   - shares:
@@ -29,3 +39,15 @@ autofs_servers:
     name: homelab.kerbol.lan
     username: "{{ vault_kerbol_username }}"
     password: "{{ vault_kerbol_password }}"
+snapper_subvolumes:
+  - name: container-data
+    path: /var/srv/container-data
+    groups: wheel
+    timeline:
+      create: 'yes'
+      cleanup: 'yes'
+      limit_hourly: 24
+      limit_daily: 7
+      limit_weekly: 4
+      limit_monthly: 2
+      limit_yearly: 0

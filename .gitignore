@@ -1,5 +1,4 @@
 *.swp
 *.code-workspace
-.vscode
 *.key
 tmp*

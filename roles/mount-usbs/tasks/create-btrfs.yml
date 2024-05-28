@@ -21,3 +21,9 @@
       -d {{ mount_usbs_data_raid }}
       {{ mount_usbs_devices | join(' ') }}
     creates: /dev/disk/by-label/{{ mount_usbs_label }}
+
+- name: Create subvolumes
+  community.general.btrfs_subvolume:
+    name: "{{ item.name }}"
+    filesystem_label: "{{ mount_usbs_label }}"
+  loop: "{{ mount_usbs_subvolumes }}"

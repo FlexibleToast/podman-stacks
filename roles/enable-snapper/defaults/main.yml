@@ -1,0 +1,5 @@
+---
+# defaults file for roles/enable-snapper
+enable_snapper_packages:
+  - snapper
+enable_snapper_subvolumes: []

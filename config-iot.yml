@@ -3,15 +3,6 @@
   gather_facts: false
   tasks:
 
-    - name: Run localhost based tasks # noqa: run-once[task]
-      delegate_to: localhost
-      run_once: true
-      block:
-
-        - name: Run roles/setup-localhost
-          ansible.builtin.include_role:
-            name: setup-localhost
-
     - name: Run initial-setup role
       ansible.builtin.include_role:
         name: initial-setup
@@ -25,12 +16,19 @@
         name: mount-usbs
       vars:
         mount_usbs_wipefs: "{{ wipefs | default(false) }}"
-        mount_usbs_label: "{{ (container_data_mountpoint | split('/'))[-1] }}"
+        mount_usbs_label: "{{ container_data_label }}"
         mount_usbs_devices: "{{ usb_devices }}"
         mount_usbs_mountpoint: "{{ container_data_mountpoint }}"
+        mount_usbs_subvolumes: "{{ container_data_subvolumes }}"
         mount_usbs_owner: "{{ container_data_owner }}"
         mount_usbs_group: "{{ container_data_group }}"
         mount_usbs_mode: "{{ container_data_mode }}"
+
+    - name: Enable snapper on btrfs drives
+      ansible.builtin.include_role:
+        name: enable-snapper
+      vars:
+        enable_snapper_subvolumes: "{{ snapper_subvolumes }}"
 
     - name: Configure SMB with autofs
       ansible.builtin.include_role:
