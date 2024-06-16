@@ -1,0 +1,16 @@
+containers:
+  - name: tvcleanup
+    image: docker.io/flexibletoast/tvcleanup:latest
+    cpus: 1
+    memory: 128m
+    env:
+      TZ: America/Chicago
+      CRON: "'0 5 * * *'"
+      PUID: 1000
+      PGID: 1001
+    volume:
+      - path: /srv/container-data/tools/tvcleanup:/config:Z
+        owner: jmcdade
+        group: container-data
+        mode: '0770'
+      - path: /srv/homelab.kerbol.lan/smb/media/TV:/tv:Z
