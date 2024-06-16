@@ -1,0 +1,8 @@
+---
+# handlers file for roles/mount-usbs
+- name: Apply SELinux file context
+  ansible.builtin.command:
+    cmd: restorecon -irv {{ item.mount }}
+  register: restorecon_result
+  changed_when: "'Relabeled' in restorecon_result.stdout"
+  loop: "{{ mount_usbs_subvolumes }}"

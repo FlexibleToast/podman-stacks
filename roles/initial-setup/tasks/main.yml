@@ -1,6 +1,11 @@
 ---
 # tasks file for roles/initial-setup
-- name: Remove kargs $ignition_firstboot from {{ inventory_hostname }}
+- name: Set timezone
+  community.general.timezone:
+    name: "{{ initial_setup_timezone }}"
+  when: initial_setup_timezone is defined
+
+- name: Remove kargs $ignition_firstboot from hosts
   ansible.builtin.command:
     cmd: rpm-ostree kargs --delete-if-present='$ignition_firstboot' --unchanged-exit-77
   changed_when:

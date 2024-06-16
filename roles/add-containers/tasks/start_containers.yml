@@ -1,0 +1,24 @@
+- name: Create directories for containers
+  ansible.builtin.file:
+    path: "{{ (item.path | split(':'))[0] }}"
+    state: directory
+    owner: "{{ item.owner | default(omit) }}"
+    group: "{{ item.group | default(omit) }}"
+    mode: "{{ item.mode | default(omit) }}"
+  loop: "{{ _container.volume }}"
+  when: _container.volume
+
+- name: Create podman containers
+  containers.podman.podman_container:
+    name: "{{ _container.name }}"
+    image: "{{ _container.image }}"
+    state: "{{ _container.state | default('quadlet') }}"
+    cpus: "{{ _container.cpus | default(omit) }}"
+    memory: "{{ _container.memory | default(omit) }}"
+    env: "{{ _container.env | default(omit) }}"
+    device: "{{ _container.device | default(omit) }}"
+    ports: "{{ _container.ports | default(omit) }}"
+    volume: "{{ (_container.volume | map(attribute='path')) | default(omit) }}"
+    rm: "{{ _container.rm | default(false) }}"
+    restart_policy: "{{ _container.restart_policy | default(omit) }}"
+    quadlet_options: "{{ _container.quadlet_options | default(add_containers_quadlet_options) }}"

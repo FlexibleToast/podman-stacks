@@ -22,10 +22,7 @@
     target: "{{ item.mount }}(/.*)?"
     setype: "{{ item.setype }}"
   loop: "{{ mount_usbs_subvolumes }}"
+  notify: "Apply SELinux file context"
 
-- name: Apply SELinux file context
-  ansible.builtin.command:
-    cmd: restorecon -irv {{ item.mount }}
-  register: restorecon_result
-  changed_when: "'Relabeled' in restorecon_result.stdout"
-  loop: "{{ mount_usbs_subvolumes }}"
+- name: Flush handlers
+  ansible.builtin.meta: flush_handlers

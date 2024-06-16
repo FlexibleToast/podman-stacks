@@ -7,6 +7,7 @@
       ansible.builtin.include_role:
         name: initial-setup
       vars:
+        initial_setup_timezone: "{{ timezone }}"
         initial_setup_packages: "{{ packages }}"
         initial_setup_user: "{{ user }}"
         initial_setup_cockpit_port: "{{ cockpit_port }}"
@@ -35,3 +36,10 @@
         name: config-autofs
       vars:
         config_autofs_servers: "{{ autofs_servers }}"
+
+    - name: Configure containers
+      ansible.builtin.include_role:
+        name: add-containers
+      vars:
+        add_containers_containers: "{{ containers }}"
+        add_containers_user: "{{ user.name }}"

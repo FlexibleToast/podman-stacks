@@ -1,0 +1,12 @@
+---
+# defaults file for roles/add-containers
+add_containers_quadlet_options:
+  - "AutoUpdate=registry"
+  - "Pull=missing"
+  - |
+    [Unit]
+    Requires=autofs.service
+    After=autofs.service
+  - |
+    [Install]
+    WantedBy=default.target

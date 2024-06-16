@@ -1,0 +1,44 @@
+---
+# tasks file for roles/add-containers
+- name: Perform user tasks
+  when: add_containers_user
+  block:
+    - name: Enable linger for user {{ add_containers_user }}
+      ansible.builtin.command:
+        cmd: loginctl enable-linger {{ add_containers_user }}
+        creates: "/var/lib/systemd/linger/{{ add_containers_user }}"
+
+    - name: Start podman related user services
+      ansible.builtin.systemd:
+        name: "{{ item }}"
+        state: started
+        enabled: true
+        scope: user
+      vars:
+        ansible_user: "{{ add_containers_user }}"
+      loop:
+        - podman-auto-update.timer
+        - podman-restart.service
+        - podman.socket
+
+- name: Start podman related system services
+  ansible.builtin.systemd:
+    name: "{{ item }}"
+    state: started
+    enabled: true
+  loop:
+    - podman-auto-update.timer
+    - podman-restart.service
+    - podman.socket
+
+# - name: Create podman networks
+#   containers.podman.podman_network:
+#   when: add_containers_networks
+
+- name: Add containers
+  ansible.builtin.include_tasks:
+    file: start_containers.yml
+  loop: "{{ add_containers_containers }}"
+  loop_control:
+    loop_var: _container
+  when: add_containers_containers is defined
